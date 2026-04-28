@@ -1,1 +1,68 @@
+import pandas as pd
+import random
 
+# --- STEP 1: DEFINE TEMPLATES ---
+# These templates simulate real-world spam and legitimate messages
+spam_templates = [
+    "Congratulations! You've won a {prize}. To claim your {amount} gift card, click here: {url}",
+    "URGENT: Your account {account} has been compromised. Verify your identity at {url} now.",
+    "WINNER! Your mobile number {phone} was selected for a £{amount} prize. Text 'CLAIM' to {shortcode}.",
+    "Get {percent}% OFF on all luxury watches. Limited time offer! Shop now at {url}",
+    "Free entry into our weekly £{amount} draw. Just text 'WIN' to {shortcode} to enter.",
+    "Your 2024 tax refund is ready. Please complete the form at {url} to receive your {amount}.",
+    "Private! Your loyalty points {points} are expiring. Call {phone} to redeem for a {prize}.",
+    "Double your income working from home! No experience needed. Details at {url}",
+    "Dating: You have 1 new private message from a local match. Click {url} to read.",
+    "Final Notice: Debt collection agency for {account}. Pay {amount} now at {url} to avoid court."
+]
+
+ham_templates = [
+    "Hey, are we still meeting for the group project at 5 PM today?",
+    "Can you please send me the link for the Zoom meeting? I can't find it.",
+    "I'm running 5 minutes late, please start the presentation without me.",
+    "Did you finish the assignment? I'm stuck on question 4.",
+    "Happy Birthday! Hope you have a great day and get lots of presents.",
+    "Just checking if you received the email I sent yesterday about the report.",
+    "Thanks for the help today, I really appreciate it!",
+    "Are you coming to the cafeteria for lunch? Everyone is already there.",
+    "The professor moved the deadline to Friday. Just thought you should know.",
+    "Sorry I missed your call, my phone was on silent. What's up?"
+]
+
+# --- STEP 2: DYNAMIC DATA GENERATORS ---
+prizes = ["iPhone 15 Pro", "Tesla Model Y", "Amazon Voucher", "Luxury Cruise", "MacBook Air"]
+urls = ["bit.ly/secure-pay", "verify-user.net", "win-prizes-now.com", "login-update.org"]
+shortcodes = ["88007", "65432", "99112", "44556"]
+phones = ["09061701461", "08712460324", "07090201529"]
+
+data = []
+
+# --- STEP 3: GENERATE 1000 ROWS ---
+for i in range(1000):
+    label = random.choice(['spam', 'ham'])
+    
+    if label == 'spam':
+        msg = random.choice(spam_templates).format(
+            prize=random.choice(prizes),
+            amount=random.choice(["$500", "£1000", "$5000"]),
+            url=random.choice(urls),
+            account=random.randint(1000, 9999),
+            phone=random.choice(phones),
+            shortcode=random.choice(shortcodes),
+            percent=random.choice(["50", "75", "90"]),
+            points=random.randint(500, 5000)
+        )
+    else:
+        msg = random.choice(ham_templates)
+        
+    data.append([label, msg])
+
+# --- STEP 4: SAVE TO CSV ---
+df = pd.DataFrame(data, columns=['label', 'message'])
+
+# Save as 'spam_dataset.csv' to match your Phase 1 folder structure
+df.to_csv('spam_dataset.csv', index=False)
+
+print("--- Data Collection Phase Complete ---")
+print(f"Total Messages Generated: {len(df)}")
+print(df.head()) # Shows the first 5 rows
